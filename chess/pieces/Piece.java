@@ -24,5 +24,5 @@ public abstract class Piece {
         this.position = position;
     }
 
-    public abstract String getSymbol();// Implemented by subclasses
+    public abstract String getSymbol();// Implemented by the subclasses
 }

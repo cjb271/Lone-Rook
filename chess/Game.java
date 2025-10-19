@@ -34,7 +34,7 @@ public class Game {
             if (board.movePiece(move, currentPlayer.getColor())) {
                 switchTurn();
             } else {
-                System.out.println("Invalid move, try again.");// Can add exception handling later
+                System.out.println("Invalid move, try again.");// Can add exception handling later.
             }
         }
     }

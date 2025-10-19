@@ -9,7 +9,7 @@ public class Position {
         this.col = col;
     }
 
-    // Converts chess notation like "E2" into usable position
+    // Converts chess notation like "E2" into usable position.
     public static Position fromChessNotation(String notation) {
         notation = notation.toUpperCase();
         int col = notation.charAt(0) - 'A';
@@ -17,7 +17,7 @@ public class Position {
         return new Position(row, col);
     }
 
-    // Converts position back to readable chess notation
+    // Converts position back to readable chess notation.
     @Override
     public String toString() {
         return "" + (char) ('A' + col) + (8 - row);

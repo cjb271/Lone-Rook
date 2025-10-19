@@ -4,7 +4,7 @@ import chess.pieces.*;
 import java.util.HashMap;
 
 public class Board {
-    private Piece[][] board = new Piece[8][8];// 2D array that stores pieces
+    private Piece[][] board = new Piece[8][8];// 2D array that stores chess pieces
     private HashMap<String, Integer> fileMap = new HashMap<>();
 
     // Maps columns A-H to rows 1-8
