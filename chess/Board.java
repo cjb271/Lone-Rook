@@ -3,18 +3,35 @@ package chess;
 import chess.pieces.*;
 import java.util.HashMap;
 
+/**
+ * Represents the chessboard and handles initialization, display,
+ * and piece movement.
+ * The Board class manages an 8x8 grid of Piece objects,
+ * manages starting positions for all chess pieces, and provides
+ * methods for moving pieces and changing their positions.
+ */
 public class Board {
+    /** 2D array representing the chessboard grid (8x8). */
     private Piece[][] board = new Piece[8][8];// 2D array that stores chess pieces
+    /** Maps column letters ('A'–'H') to their numeric equivalent (0–7). */
     private HashMap<String, Integer> fileMap = new HashMap<>();
 
-    // Maps columns A-H to rows 1-8
+    /**
+     * Constructs a new Board object and maps
+     * columns A–H to 0–7.
+     */
     public Board() {
         for (int i = 0; i < 8; i++) {
             fileMap.put(String.valueOf((char) ('A' + i)), i);
         }
     }
 
-    // Sets piece starting positions
+    /**
+     * Sets up the initial starting positions of all chess pieces.
+     * Black pieces are placed on rows 0–1; white pieces are placed on rows 6–7.
+     * Each piece type (Pawn, Rook, Knight, Bishop, Queen, King)
+     * is instantiated and positioned in its correct starting location.
+     */
     public void initialize() {
         // Pawns
         for (int i = 0; i < 8; i++) {
@@ -48,7 +65,13 @@ public class Board {
         board[7][4] = new King("White", new Position(7, 4));
     }
 
-    // Shows board
+    /**
+     * Displays the chessboard in a text-based format on the console.
+     * This method was primarily used for phase 1 of this project before GUI development
+     * and is no longer directly used.
+     * Each occupied square prints its piece symbol, while empty squares
+     * are displayed as "##".
+     */
     public void display() {
         System.out.println("    A   B   C   D   E   F   G   H");
         for (int row = 0; row < 8; row++) {
@@ -66,21 +89,56 @@ public class Board {
         System.out.println("    A   B   C   D   E   F   G   H\n");
     }
 
-    //Handles player moves, still need to implement chess rules
+    /**
+     * Returns the Piece located at the specified row and column.
+     */
+    public Piece getPieceAt(int row, int col) {
+        return board[row][col];
+    }
+
+    /**
+     * Moves a chess piece on the board using Position objects.
+     * This version is used by the GUI to process click-based moves.
+     * It verifies that both positions are valid, ensures that the piece
+     * belongs to the current player, and performs the move (with capture
+     * if an opponent’s piece occupies the target square).
+     */
+    public boolean movePiece(Position from, Position to, String color) {
+        try {
+            if (from == null || to == null) return false; // No valid origin or destination square
+
+            // both positions exist
+            if (from.row < 0 || from.row > 7 || from.col < 0 || from.col > 7) return false;
+            if (to.row < 0 || to.row > 7 || to.col < 0 || to.col > 7) return false;
+
+            Piece piece = board[from.row][from.col]; // get piece being moved
+            if (piece == null) return false; // no piece at origin
+
+            if (!piece.getColor().equalsIgnoreCase(color)) return false; // allows moves by current player only
+
+            // move with capture
+            board[to.row][to.col] = piece;
+            board[from.row][from.col] = null;
+            piece.setPosition(to);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    /**
+     * Processes a move entered as chess notation text (e.g., "E2 E4"),
+     * converts it to Position objects, and delegates to the
+     * coordinate-based version of the movePiece(Position, Position, String) method.
+     * This version is no longer used directly in the GUI.
+     */
     public boolean movePiece(String move, String color) {
         try {
             String[] parts = move.split(" ");
             if (parts.length != 2) return false;
             Position from = Position.fromChessNotation(parts[0]);
             Position to = Position.fromChessNotation(parts[1]);
-
-            Piece piece = board[from.row][from.col];
-            if (piece == null || !piece.getColor().equalsIgnoreCase(color)) return false;
-
-            board[to.row][to.col] = piece;
-            board[from.row][from.col] = null;
-            piece.setPosition(to);
-            return true;
+            return movePiece(from, to, color); // overload of movePiece to reuse logic
         } catch (Exception e) {
             return false;
         }
